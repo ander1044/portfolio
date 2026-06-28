@@ -10,6 +10,18 @@ Automate competitive monitoring, run heuristic threat assessments on outbound in
                                                                             └──> [Mailchimp Content Pipeline]
 ```
 
+### Airtable
+![Project Screenshot](../images/P3-airtable-comp.jpeg)
+
+![Project Screenshot](../images/P3-airtable-camp.jpeg)
+
+### Mailchimp
+![Project Screenshot](../images/)
+
+### Google Drive 
+![Project Screenshot](../images/)
+
+
 ## Functional Breakdown
 * **Autonomous Market Scraping:** The system relies on a Cron intervals monitor or RSS change listeners to parse new promotional text configurations, pricing shifts, or announcement blog drops from competitor domains.
 * **Strategic Heuristics Analysis:** Text strings are evaluated by an LLM strategy node to explicitly extract: core competitive angles, target audience focus changes, calculated threat severity ratings, and actionable marketing response notes.

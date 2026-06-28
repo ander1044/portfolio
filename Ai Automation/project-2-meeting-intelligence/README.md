@@ -11,6 +11,16 @@ An operational data ingestion pipeline that transforms raw conversational meetin
                                                                         └──> Loop ➔ [ClickUp Task Creator]
 ```
 
+### n8n
+![Project Screenshot](../images/P2-n8n.jpeg)
+
+### Notion
+![Project Screenshot](../images/)
+
+### ClickUp
+![Project Screenshot](../images/P2-clickUp.jpeg)
+
+
 ## Functional Breakdown
 * **Client-Side Ingestion CLI:** Includes a native Node.js automation script (`/scripts/ingest_meeting.py`) that safely opens local project transcript data using the file system module (`fs`) and targets the production pipeline via asynchronous runtime `fetch` requests.
 * **Decoupled Handoff Pattern:** To prevent execution hangs and canvas UI performance locking, the loop architecture is split across a Parent and Child relationship. The parent dumps raw summaries to Notion, while the child sub-workflow processes the multi-item deliverable array independently.

@@ -11,6 +11,19 @@ Protect executive focus by establishing an autonomous ingestion and filtration l
                                                            ├──> Lead ➔ [HubSpot API] ➔ [Slack Block Kit Draft Button]
                                                            └──> Urgent ➔ [Slack Pager/SMS Alert]
 ```
+### n8n
+![Project Screenshot](../images/P1-n8n.jpeg)
+
+### HubSpot
+![Project Screenshot](../images/P1-Hubspot.jpeg)
+
+### Slack
+![Project Screenshot](../images/P1-n8n.jpeg)
+
+### Gmail
+![Project Screenshot](../images/P1-n8n.jpeg)
+
+
 
 ## Functional Breakdown
 * **Zero-Shot Classification:** Inbound emails are passed to an LLM context window to extract transactional intent and categorize items dynamically (`New Lead`, `Current Client Urgent`, `Spam`, or `Partnership`).
