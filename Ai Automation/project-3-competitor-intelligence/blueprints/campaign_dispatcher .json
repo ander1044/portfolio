@@ -1,0 +1,490 @@
+{
+    "name": "Integration Airtable",
+    "flow": [
+        {
+            "id": 2,
+            "module": "airtable:TriggerWatchRecords",
+            "version": 3,
+            "parameters": {
+                "__IMTCONN__": 8602844,
+                "base": "app0vjuBIkBUVqnjA",
+                "useColumnId": false,
+                "table": "tbln4ZzPlhblLFjlI",
+                "config": {
+                    "triggerField": " Last Modified Time",
+                    "labelField": "Status"
+                },
+                "maxRecords": 10,
+                "view": "viw5vslOfAW7t6d7X",
+                "formula": ""
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": -293,
+                    "y": 2
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "My Airtable OAuth connection (User ID: usrv1BRaI6uYjuDbI)",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "airtable3"
+                            }
+                        },
+                        "base": {
+                            "label": "Ops Marketing Engine"
+                        },
+                        "table": {
+                            "label": "Research Table"
+                        },
+                        "config": {
+                            "nested": {
+                                "triggerField": {
+                                    "label": " Last Modified Time"
+                                },
+                                "labelField": {
+                                    "label": "Status"
+                                }
+                            }
+                        },
+                        "view": {
+                            "label": "Grid view"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:airtable3,airtable2",
+                        "label": "Connection",
+                        "required": true
+                    },
+                    {
+                        "name": "base",
+                        "type": "select",
+                        "label": "Base",
+                        "required": true
+                    },
+                    {
+                        "name": "useColumnId",
+                        "type": "boolean",
+                        "label": "Use Column ID",
+                        "required": true
+                    },
+                    {
+                        "name": "table",
+                        "type": "select",
+                        "label": "Table",
+                        "required": true
+                    },
+                    {
+                        "name": "config",
+                        "type": "collection",
+                        "label": "Trigger configuration",
+                        "spec": [
+                            {
+                                "name": "triggerField",
+                                "type": "select",
+                                "label": "Trigger field",
+                                "required": true
+                            },
+                            {
+                                "name": "triggerField",
+                                "type": "hidden"
+                            },
+                            {
+                                "name": "labelField",
+                                "type": "select",
+                                "label": "Label field",
+                                "required": true
+                            }
+                        ]
+                    },
+                    {
+                        "name": "maxRecords",
+                        "type": "integer",
+                        "label": "Limit",
+                        "required": true
+                    },
+                    {
+                        "name": "view",
+                        "type": "select",
+                        "label": "View"
+                    },
+                    {
+                        "name": "formula",
+                        "type": "text",
+                        "label": "Formula"
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                    },
+                    {
+                        "name": "createdTime",
+                        "type": "date",
+                        "label": "Created Time"
+                    },
+                    {
+                        "name": "Source Name",
+                        "label": "Source Name",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Captured URL",
+                        "label": "Captured URL",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Raw Content Dump",
+                        "label": "Raw Content Dump",
+                        "type": "text",
+                        "multiline": true
+                    },
+                    {
+                        "name": "AI Trend Analysis",
+                        "label": "AI Trend Analysis",
+                        "type": "text",
+                        "multiline": true
+                    },
+                    {
+                        "name": "Status",
+                        "label": "Status",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Campaign Dispatches",
+                        "label": "Campaign Dispatches",
+                        "type": "array",
+                        "spec": {
+                            "label": "Record ID"
+                        }
+                    },
+                    {
+                        "name": " Created Time",
+                        "label": " Created Time",
+                        "type": "date"
+                    },
+                    {
+                        "name": " Last Modified Time",
+                        "label": " Last Modified Time",
+                        "type": "date"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 6,
+            "module": "ai-tools:Ask",
+            "version": 2,
+            "parameters": {
+                "makeConnectionId": 8601081,
+                "model": "small"
+            },
+            "filter": {
+                "name": "",
+                "conditions": [
+                    [
+                        {
+                            "a": "{{2.Status}}",
+                            "o": "text:equal",
+                            "b": "Approved for Newsletter"
+                        }
+                    ]
+                ]
+            },
+            "mapper": {
+                "input": "generate an engaging, conversion-optimized marketing"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 169,
+                    "y": 2
+                },
+                "restore": {
+                    "parameters": {
+                        "makeConnectionId": {
+                            "label": "Make's AI Provider (default)",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "ai-provider"
+                            }
+                        },
+                        "model": {
+                            "mode": "chose",
+                            "nested": [],
+                            "label": "SmallModel: gpt-5-nano. Reasoning: minimal. Efficiently handles long conversations and reasoning, delivering smart conclusions quickly"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "makeConnectionId",
+                        "type": "account:ai-provider,openai-gpt-3,anthropic-claude,gemini-ai-q9zyjp,ai-agent-foundry-openai,ai-agent-foundry-non-openai,mistral-ai,cohere,groq,ai-agent-xai,amazon-bedrock,ai-agent-openai-compatible",
+                        "label": "Connection",
+                        "required": true
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "input",
+                        "type": "text",
+                        "label": "Text",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "module": "mailchimp:createACampaign",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 8603863
+            },
+            "mapper": {
+                "title": "News campaign",
+                "list": "64ba2ea867",
+                "subject_line": "Security news",
+                "from_name": "i0nai Marketing",
+                "reply_to": "mristo1044@gmail.com",
+                "use_conversation": false,
+                "select": "html",
+                "segment_text": "{{6.answer}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 583,
+                    "y": -2
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "My Mailchimp connection (mristo1044@gmail.com)",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "mailchimp2"
+                            }
+                        }
+                    },
+                    "expect": {
+                        "list": {
+                            "mode": "chose",
+                            "label": "i0nai"
+                        },
+                        "use_conversation": {
+                            "mode": "chose"
+                        },
+                        "folder": {
+                            "mode": "chose"
+                        },
+                        "select": {
+                            "label": "By HTML Format Text"
+                        },
+                        "segment": {
+                            "mode": "chose"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:mailchimp2,mailchimp",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "title",
+                        "type": "text",
+                        "label": "Campaign Title",
+                        "required": true
+                    },
+                    {
+                        "name": "list",
+                        "type": "select",
+                        "label": "List (Audience) ID",
+                        "required": true
+                    },
+                    {
+                        "name": "subject_line",
+                        "type": "text",
+                        "label": "Subject Line",
+                        "required": true
+                    },
+                    {
+                        "name": "preview_text",
+                        "type": "text",
+                        "label": "Preview Text"
+                    },
+                    {
+                        "name": "from_name",
+                        "type": "text",
+                        "label": "From Name",
+                        "required": true
+                    },
+                    {
+                        "name": "reply_to",
+                        "type": "email",
+                        "label": "From Email Address",
+                        "required": true
+                    },
+                    {
+                        "name": "to_name",
+                        "type": "text",
+                        "label": "To Name"
+                    },
+                    {
+                        "name": "use_conversation",
+                        "type": "boolean",
+                        "label": "Use Conversation",
+                        "required": true
+                    },
+                    {
+                        "name": "folder",
+                        "type": "select",
+                        "label": "Folder ID"
+                    },
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Fill the Body Content",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "template",
+                                "html"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "segment",
+                        "type": "select",
+                        "label": "Segment (Tag) ID"
+                    },
+                    {
+                        "name": "segment_text",
+                        "type": "text",
+                        "label": "HTML Content"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 7,
+            "module": "google-drive:createAFolder",
+            "version": 4,
+            "parameters": {
+                "__IMTCONN__": 8604822
+            },
+            "mapper": {
+                "destination": "drive",
+                "folderId": "/1FqxNjLxTruU6SDM3iRDCl20-ovHoh2ot/1cdrkpZLHJOdZvMw6RLzFVXe-G25WRjTc",
+                "name": "{{3.id}}_{{3.create_time}}",
+                "shared": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": 883,
+                    "y": -2
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "My Google Drive connection (mristo1044@gmail.com)",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-drive"
+                            }
+                        }
+                    },
+                    "expect": {
+                        "destination": {
+                            "label": "My Drive"
+                        },
+                        "folderId": {
+                            "mode": "chose",
+                            "path": [
+                                "Marketing",
+                                "Dispatches"
+                            ]
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google-restricted,google-drive",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "destination",
+                        "type": "select",
+                        "label": "New Drive Location",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "folderId",
+                        "type": "folder",
+                        "label": "New Folder Location",
+                        "required": true
+                    },
+                    {
+                        "name": "name",
+                        "type": "text",
+                        "label": "New Folder's Name"
+                    },
+                    {
+                        "name": "shared",
+                        "type": "boolean",
+                        "label": "Share Folder",
+                        "required": true
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com",
+        "notes": []
+    }
+}

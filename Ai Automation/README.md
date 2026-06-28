@@ -1,61 +1,51 @@
-# Autonomous Business Operations & Pipeline Automation Suite
+# Enterprise Business Automation & Pipeline Architecture Suite
 
-A collection of enterprise-grade, event-driven automation architectures designed to streamline customer acquisition, operational intelligence, and competitive market research. 
-
----
-
-## ── PROJECT 1: Executive "Deep Work" Inbox Triage & CRM Engine
-**Objective:** Protect executive time by autonomously filtering inbound communication, updating sales pipelines, and staging contextual draft replies.
-
-### System Architecture
-
-```
-[Gmail Trigger] ➔ [Ollama / Local LLM (JSON Schema)] ➔ [Switch Router]
-                                                           ├──> Lead ➔ [HubSpot API] ➔ [Slack Block Kit Draft Button]
-                                                           └──> Urgent ➔ [Slack Pager/SMS Alert]
-```
-
-### Key Engineering Highlights
-* **Intent-Driven Routing:** Implemented zero-shot classification via LLM prompting to route communications with 95%+ accuracy.
-* **Interactive Approvals:** Leveraged Slack block kit webhooks to establish a human-in-the-loop validation step before draft transmission.
-* **Tech Stack:** n8n, OpenAI API, HubSpot CRM, Slack Block Kit, Gmail API.
-
-👉 [View Project 1 Details & Source Code](./project-1-crm-triage/)
+An enterprise-grade collection of event-driven automation engines designed to protect executive focus, streamline internal operational pipelines, and automate market intelligence.
 
 ---
 
-## ── PROJECT 2: Autonomous Meeting Intelligence & Task Dispatcher
-**Objective:** An operations engine that ingests raw meeting data, parses structured tasks, updates project spaces, and updates company knowledge bases asynchronously.
+## Technical Architecture Overview
 
-### System Architecture
+This repository demonstrates advanced asynchronous workflows, modular micro-workflow patterns, and structured data serialization across three functional domains:
 
-```
-[Python CLI Script] ➔ POST JSON ➔ [n8n Webhook] ➔ [LLM Extraction] ➔ [Notion Doc Creator]
-                                                                        └──> Loop ➔ [ClickUp Task Creator]
-```
-
-### Key Engineering Highlights
-* **Modular Sub-Workflow Design:** Architected a decoupled Parent-Child workflow system to handle variable-length task arrays seamlessly without blocking canvas runtime.
-* **Client-Side Trigger Engine:** Built a native JavaScript client utility utilizing the Node.js File System (`fs`) and `fetch` APIs to parse and stream raw transcript payloads locally into cloud endpoints.
-* **Tech Stack:** Node.js, n8n, Notion API, ClickUp API, Slack Markdown Engine.
-
-👉 [View Project 2 Details & Source Code](./project-2-meeting-intelligence/)
+1. **[Project 1: The Executive "Deep Work" Inbox Triage & CRM Engine](./project-1-crm-triage/)**  
+   *Event-driven intent classification, interactive human-in-the-loop Slack UI states, and pipeline automation.*
+2. **[Project 2: The Autonomous Meeting Intelligence & Task Dispatcher](./project-2-meeting-intelligence/)**  
+   *Decoupled Parent-Child sub-workflow scaling, native JavaScript/Node.js ingestion CLI, and relational database provisioning.*
+3. **[Project 3: Automated Competitor Intelligence & Marketing Pipeline](./project-3-competitor-intelligence/)**  
+   *Scheduled web scraping arrays, heuristic content triage, programmatic campaign scheduling, and structured media asset staging.*
 
 ---
 
-## ── PROJECT 3: Automated Competitor Intelligence & Marketing Pipeline
-**Objective:** Automates market positioning monitoring, handles competitor research data ingestion, and staging digital marketing assets.
+## Key Engineering Methodologies Demonstrated
 
-### System Architecture
+* **Decoupled Workflow Topologies:** Implementing Parent-Child sub-workflow splits to isolate data streams and optimize memory footprints during array processing.
+* **Deterministic Structured Extraction:** Constraining unstructured LLM outputs to rigid JSON schemas without conversational or markdown noise.
+* **Interactive Webhook States:** Leveraging asynchronous block-kit payloads to introduce low-latency user validation steps into fully automated loops.
+
+---
+
+## Repository Structure
+
+```text
+├── project-1-crm-triage/
+│   ├── README.md                 # Project 1 Documentation
+│   └── workflows/
+│       └── crm_triage_engine.json # Exported n8n workflow JSON
+├── project-2-meeting-intelligence/
+│   ├── README.md                 # Project 2 Documentation
+│   ├── scripts/
+│   │   └── ingest_meeting.py     # Standalone Python ingestion CLI
+│   └── workflows/
+│       ├── parent_ingest.json     # Main orchestration canvas JSON
+│       └── child_task_loop.json   # High-throughput processing loop
+└── project-3-competitor-intelligence/
+    ├── README.md                 # Project 3 Documentation
+    └── blueprints/
+        └── campaign_dispatcher.json # Exported Make blueprint
+        └── competitor_intel.json # Exported Make blueprint
 
 ```
-[Scheduled Polling / Scraper] ➔ [Airtable Hub] ➔ [Filter: Status Change] ➔ [AI Asset Generator]
-                                                                            └──> [Mailchimp Content Pipeline]
-```
 
-### Key Engineering Highlights
-* **Competitive Content Aggregation:** Created automated ingestion pipelines that scrape and parse competitor corporate blogs and landing page adjustments.
-* **Automated Asset Staging:** Integrated workflows that take raw AI text summaries, write draft newsletter copy segments, and automatically structure asset directories for design handoffs.
-* **Tech Stack:** Make (Integromat), Airtable API, Mailchimp API, Google Workspace API.
-
-👉 [View Project 3 Details & Source Code](./project-3-competitor-intelligence/)
+License
+MIT License. See project subdirectories for specific installation and configuration prerequisites.

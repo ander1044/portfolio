@@ -1,0 +1,391 @@
+{
+  "name": "Inbox Triage & CRM Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "Label_620844268041475775"
+          ],
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -544,
+        -112
+      ],
+      "id": "08c4d5d9-047f-4be4-97cc-412e3fa23224",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "EmqpuKAV91yKDI0k",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "llama3.1:8b",
+          "mode": "list",
+          "cachedResultName": "llama3.1:8b"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an advanced operations data extraction engine. Analyze the incoming email body text and extract contact details and metadata. \n\nCRITICAL: Return ONLY a raw JSON object matching the requested schema. Do not write any conversational text, introductory remarks, or markdown code blocks (do not wrap in ```json). If a field cannot be found, return null.\n\nInput Email:\nSubject: {{ $json.subject }}\nFrom: {{ $json.from.text }}\nBody: {{ $json.text }}\n\nExtract the data into this exact JSON structure:\n{\n  \"first_name\": \"Extract the person's first name\",\n  \"last_name\": \"Extract the person's last name\",\n  \"company_name\": \"Extract the organization or company name if apparent, Ignore Hubspot as a company, else use null\",\n  \"email_address\": \"Extract the direct sender email address\",\n  \"phone_number\": \"Extract any phone numbers found in the body or email signature\",\n  \"project_name\": \"Extrct what the project or task is about to create a task name\"\n  \"estimated_budget\": \"Extract any financial numbers related to budget or project scope, number only, else null\",\n  \"urgency_rating\": \"Rate the urgency from 1 to 5 based on text context\"\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -112
+      ],
+      "id": "8e5455ac-1778-46af-ac7d-be8ab83ad968",
+      "name": "Message a model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "r1K2goGITUG1gLYK",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.urgency_rating }}",
+                    "rightValue": 5,
+                    "operator": {
+                      "type": "number",
+                      "operation": "lte"
+                    },
+                    "id": "89476143-aafd-47e3-a4ce-bb90f392f879"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "3dd7fe65-a432-4ef4-8b8b-5fb54a500d2c",
+                    "leftValue": "={{ $json.urgency_rating }}",
+                    "rightValue": 7,
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        256,
+        -112
+      ],
+      "id": "80d0646c-43fb-4b6c-911f-4590eb77be59",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "authentication": "appToken",
+        "email": "={{ $json.email_address }}",
+        "additionalFields": {
+          "companyName": "={{ $json.company_name }}",
+          "firstName": "={{ $json.first_name }}",
+          "lastName": "={{ $json.last_name }}",
+          "phoneNumber": "={{ $json.phone_number }}",
+          "workEmail": "={{ $json.email_address }}"
+        },
+        "options": {
+          "resolveData": false
+        }
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        -208
+      ],
+      "id": "721adcb6-19c6-4c99-9f58-cb2e3feb3f66",
+      "name": "Create or update a contact",
+      "credentials": {
+        "hubspotAppToken": {
+          "id": "GCC2imFClC0598H8",
+          "name": "HubSpot account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#leads",
+          "mode": "name"
+        },
+        "message": "Hi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        480,
+        -16
+      ],
+      "id": "aa14ea2e-3875-4662-9262-d4a38203d681",
+      "name": "Send message and wait for response",
+      "webhookId": "866e642f-a740-4ec4-846e-ba69c85b47b9",
+      "credentials": {
+        "slackApi": {
+          "id": "clO3va8WsbIKXKh4",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "appToken",
+        "resource": "deal",
+        "stage": "qualifiedtobuy",
+        "additionalFields": {
+          "amount": "={{ $('Switch').item.json.estimated_budget }}",
+          "associatedCompany": "={{ $json.properties.associatedcompanyid.value }}",
+          "description": "={{ $('Gmail Trigger').item.json.text }}",
+          "dealName": "={{ $('Switch').item.json.project_name }}",
+          "dealOwner": {
+            "__rl": true,
+            "value": 94570265,
+            "mode": "list",
+            "cachedResultName": "mristo1044@gmail.com"
+          }
+        }
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        -208
+      ],
+      "id": "441384ac-f6a9-4c26-80e4-b3bb5a9780d9",
+      "name": "Create a deal",
+      "credentials": {
+        "hubspotAppToken": {
+          "id": "GCC2imFClC0598H8",
+          "name": "HubSpot account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "=\n{{ $json.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        -112
+      ],
+      "id": "c5a5b126-a3e9-4a45-b1ae-7fe4f7a0ebda",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "sendAndWait",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#leads",
+          "mode": "name"
+        },
+        "message": "={{ $('Gmail Trigger').item.json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        928,
+        -208
+      ],
+      "id": "d7d3c421-3949-4587-8680-cff74e1f367c",
+      "name": "Send message and wait for response1",
+      "webhookId": "49b26ff7-7dbe-4d39-8043-eb83361ec47d",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "QKFlNsYPW70RObtl",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Gmail Trigger').item.json.from.value[0].address }}",
+        "subject": "=Next steps with i0nai",
+        "message": "=Hi {{ $('Edit Fields').item.json.first_name }},\n\nThank you for reaching out and sharing the details about your operational goals at {{ $('Edit Fields').item.json.company_name }}. We'd love to help you streamline your sales pipeline and automate your workflows with n8n.\n\nTo find a time that works best for a brief discovery call, please select a slot that fits your schedule here: https://calendar.app.google/YTByWK5UdWWdLHpu9\n\n\nLooking forward to connecting with you soon.\n\nBest regards,\n\nAnda",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1136,
+        -208
+      ],
+      "id": "569e4862-3689-4d6a-8e5b-d3cff409b16a",
+      "name": "Send a message",
+      "webhookId": "c91f160e-35f0-4c79-b583-50c49169b01b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "EmqpuKAV91yKDI0k",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Create or update a contact",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Create or update a contact": {
+      "main": [
+        [
+          {
+            "node": "Create a deal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a deal": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "c591eecf-183e-4909-af11-88e10cb0c1e9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6014915b5bd8b18b51541dd7848851e360f2d52ea1434e7606ee54d296c878f1"
+  },
+  "id": "WmQnRVN2oGGw2NGAeRVOv",
+  "tags": []
+}
