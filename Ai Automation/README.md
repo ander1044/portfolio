@@ -9,11 +9,11 @@ A collection of enterprise-grade, event-driven automation architectures designed
 
 ### System Architecture
 
-'''
+```
 [Gmail Trigger] ➔ [Ollama / Local LLM (JSON Schema)] ➔ [Switch Router]
                                                            ├──> Lead ➔ [HubSpot API] ➔ [Slack Block Kit Draft Button]
                                                            └──> Urgent ➔ [Slack Pager/SMS Alert]
-'''
+```
 
 ### Key Engineering Highlights
 * **Intent-Driven Routing:** Implemented zero-shot classification via LLM prompting to route communications with 95%+ accuracy.
@@ -29,10 +29,10 @@ A collection of enterprise-grade, event-driven automation architectures designed
 
 ### System Architecture
 
-'''
+```
 [Python CLI Script] ➔ POST JSON ➔ [n8n Webhook] ➔ [LLM Extraction] ➔ [Notion Doc Creator]
                                                                         └──> Loop ➔ [ClickUp Task Creator]
-'''
+```
 
 ### Key Engineering Highlights
 * **Modular Sub-Workflow Design:** Architected a decoupled Parent-Child workflow system to handle variable-length task arrays seamlessly without blocking canvas runtime.
@@ -48,10 +48,10 @@ A collection of enterprise-grade, event-driven automation architectures designed
 
 ### System Architecture
 
-'''
+```
 [Scheduled Polling / Scraper] ➔ [Airtable Hub] ➔ [Filter: Status Change] ➔ [AI Asset Generator]
                                                                             └──> [Mailchimp Content Pipeline]
-'''
+```
 
 ### Key Engineering Highlights
 * **Competitive Content Aggregation:** Created automated ingestion pipelines that scrape and parse competitor corporate blogs and landing page adjustments.
