@@ -18,10 +18,10 @@ Protect executive focus by establishing an autonomous ingestion and filtration l
 ![Project Screenshot](../images/P1-Hubspot.jpeg)
 
 ### Slack
-![Project Screenshot](../images/P1-n8n.jpeg)
+![Project Screenshot](../images/P3-slack.jpeg)
 
 ### Gmail
-![Project Screenshot](../images/P1-n8n.jpeg)
+![Project Screenshot](../images/P1-gmail.jpeg)
 
 
 

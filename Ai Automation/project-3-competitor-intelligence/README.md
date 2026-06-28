@@ -16,10 +16,10 @@ Automate competitive monitoring, run heuristic threat assessments on outbound in
 ![Project Screenshot](../images/P3-airtable-camp.jpeg)
 
 ### Mailchimp
-![Project Screenshot](../images/)
+![Project Screenshot](../images/P3-mailchim9.jpeg)
 
 ### Google Drive 
-![Project Screenshot](../images/)
+![Project Screenshot](../images/P3-Gdrive.jpeg)
 
 
 ## Functional Breakdown

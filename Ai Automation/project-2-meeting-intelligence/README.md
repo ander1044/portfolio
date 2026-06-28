@@ -15,7 +15,7 @@ An operational data ingestion pipeline that transforms raw conversational meetin
 ![Project Screenshot](../images/P2-n8n.jpeg)
 
 ### Notion
-![Project Screenshot](../images/)
+![Project Screenshot](../images/P2-notion.jpeg)
 
 ### ClickUp
 ![Project Screenshot](../images/P2-clickUp.jpeg)
