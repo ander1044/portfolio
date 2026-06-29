@@ -31,7 +31,7 @@ Protect executive focus by establishing an autonomous ingestion and filtration l
 * **Asynchronous Human-in-the-Loop:** Instead of sending direct, unreviewed AI messages to prospects, the system posts an interactive block-kit message to Slack. Approving the notification prompts n8n to call the Gmail API and stage a draft response embedded with custom calendar scheduler hooks.
 
 ## Configuration Details
-The exported engine profile resides in `/workflows/crm_triage_engine.json`. 
+The exported engine profile resides in `/workflows/Inbox Triage & CRM Engine.json`. 
 
 ### Required Variables
 * `HUBSPOT_API_KEY`

@@ -17,6 +17,9 @@ An operational data ingestion pipeline that transforms raw conversational meetin
 ### Notion
 ![Project Screenshot](../images/P2-notion.jpeg)
 
+### n8n
+![Project Screenshot](../images/P2-n8n2.jpeg)
+
 ### ClickUp
 ![Project Screenshot](../images/P2-clickUp.jpeg)
 
@@ -27,8 +30,8 @@ An operational data ingestion pipeline that transforms raw conversational meetin
 * **Granular Deliverable Provisioning:** The child node reads the formatted JSON array properties (`task_name`, `assignee`, `due_date`) to build decoupled execution items inside ClickUp automatically.
 
 ## Deployment Steps
-1. Deploy the background consumer loop: Import `/workflows/child_task_loop.json` into a fresh n8n canvas and note its unique system workflow string.
-2. Link the core orchestration engine: Import `/workflows/parent_ingest.json` on a secondary canvas and paste the child string into the `Execute Workflow` properties module.
+1. Deploy the background consumer loop: Import `/workflows/Child_ Meeting Task Provisioner.json` into a fresh n8n canvas and note its unique system workflow string.
+2. Link the core orchestration engine: Import `/workflows/Parent_ Meeting Intelligence Orchestrator.json` on a secondary canvas and paste the child string into the `Execute Workflow` properties module.
 3. Configure your local runtime profile and pass payloads into the pipeline:
    ```bash
    python3 scripts/ingest_meeting.py

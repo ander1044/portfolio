@@ -18,6 +18,11 @@ Automate competitive monitoring, run heuristic threat assessments on outbound in
 ### Mailchimp
 ![Project Screenshot](../images/P3-mailchim9.jpeg)
 
+
+### Gmail
+![Project Screenshot](../images/P3-Gmail.jpeg)
+
+
 ### Google Drive 
 ![Project Screenshot](../images/P3-Gdrive.jpeg)
 
@@ -28,5 +33,5 @@ Automate competitive monitoring, run heuristic threat assessments on outbound in
 * **Staged Content Distribution:** High-value alerts write data blocks straight to a master research table inside Airtable. Simultaneously, the copy layer is structured, pushed into Mailchimp as a staged newsletter campaign component, and hooks into Google Drive to build asset directory paths for creative design workflows.
 
 ## Configuration Details
-Import the Make structural blueprint file `/blueprints/campaign_dispatcher.json` directly into
-Import the Make structural blueprint file `/blueprints/competitor_intel.json` directly into
+Import the Make structural blueprint file `/blueprints/The Marketing Asset & Newsletter Stager.blueprint.json` directly into
+Import the Make structural blueprint file `/blueprints/Competitor Intelligence Ingestion.blueprint.json` directly into
