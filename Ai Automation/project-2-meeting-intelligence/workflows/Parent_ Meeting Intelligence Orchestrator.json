@@ -1,0 +1,235 @@
+{
+  "name": "Parent: Meeting Intelligence Orchestrator",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "Cs6yoKdLK4ihSVcf"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1632,
+        240
+      ],
+      "id": "cd896c17-ec36-4feb-af56-71e2db5e6674",
+      "name": "Call 'Child: Meeting Task Provisioner'"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "meeting-ingestion",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        384,
+        240
+      ],
+      "id": "12d14f34-7c38-412c-9919-25ead7ed94e2",
+      "name": "Meeting Transcript Upload Webhook",
+      "webhookId": "e3f9dd07-fe8d-4bd2-ba9b-49043be3b2ce"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "llama3.1:8b",
+          "mode": "list",
+          "cachedResultName": "llama3.1:8b"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an operations data parser. Extract meeting deliverables into a clean JSON array. Do not include markdown wraps (like ```json), and do not include conversational commentary.\n\nAnalyze this raw transcript:\nTitle: {{ $json.body.metadata.title }}\n\nHost: {{ $json.body.metadata.host }}\n\nDate: {{ $json.body.metadata.date }}\n\nTranscript: {{ $json.body.transcript_raw }}\n\nOutput data matching this JSON schema exactly:\n{\n  \"executive_summary\": \"Provide a clean 2-sentence breakdown of what occurred.\",\n  \"action_items\": [\n    {\n      \"host\": \"Name of meeting host\",\n      \"task_name\": \"Clear task title\",\n      \"assignee\": \"Name of responsible individual,\"\n      \"due_date\": \"YYYY-MM-DD\"\n   }\n  ]\n}\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        608,
+        240
+      ],
+      "id": "f09b1778-53aa-45ba-b89c-a4b58e97bf8f",
+      "name": "Operations Data Parser LLM",
+      "credentials": {
+        "ollamaApi": {
+          "id": "r1K2goGITUG1gLYK",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $json.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        960,
+        240
+      ],
+      "id": "5dfef367-5c85-4168-a989-92976e162bfa",
+      "name": "JSON Data Formatter"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assuming $input.first().json.myArray contains your array of items\nconst items = $input.first().json.action_items;\n\nreturn items.map(item => {\n  return { json: item };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        240
+      ],
+      "id": "c2d538bb-9521-4be0-a86a-839de83aa8c1",
+      "name": "Array To List Converter"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "38ccc281-f93c-80b3-a79e-c2da77fbe632",
+          "mode": "list",
+          "cachedResultName": "task list ",
+          "cachedResultUrl": "https://app.notion.com/p/38ccc281f93c80b3a79ec2da77fbe632"
+        },
+        "title": "={{ $('Meeting Transcript Upload Webhook').item.json.body.metadata.title }}",
+        "simple": false,
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Date|date",
+              "includeTime": false,
+              "date": "={{ $('Meeting Transcript Upload Webhook').item.json.body.metadata.date }}",
+              "timezone": "Africa/Johannesburg"
+            },
+            {
+              "key": "Ai Summary|rich_text",
+              "textContent": "={{ $json.task_name }}"
+            },
+            {
+              "key": "Host|rich_text",
+              "textContent": "={{ $('Meeting Transcript Upload Webhook').item.json.body.metadata.host }}"
+            },
+            {
+              "key": "Assignee|rich_text",
+              "textContent": "={{ $json.assignee }}"
+            },
+            {
+              "key": "Due Date|date",
+              "includeTime": false,
+              "date": "={{ $json.due_date }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1408,
+        240
+      ],
+      "id": "4ab8e928-e82b-4c01-91b6-cac3dc98112e",
+      "name": "Create Notion Database Page",
+      "credentials": {
+        "notionApi": {
+          "id": "hZHwPH0fnwvKva7X",
+          "name": "Notion account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Meeting Transcript Upload Webhook": {
+      "main": [
+        [
+          {
+            "node": "Operations Data Parser LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Operations Data Parser LLM": {
+      "main": [
+        [
+          {
+            "node": "JSON Data Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON Data Formatter": {
+      "main": [
+        [
+          {
+            "node": "Array To List Converter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Array To List Converter": {
+      "main": [
+        [
+          {
+            "node": "Create Notion Database Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Notion Database Page": {
+      "main": [
+        [
+          {
+            "node": "Call 'Child: Meeting Task Provisioner'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "78d4d017-d74e-457b-8dd9-852206664fe9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6014915b5bd8b18b51541dd7848851e360f2d52ea1434e7606ee54d296c878f1"
+  },
+  "id": "nLz-iW709nOEzG0q8vx5U",
+  "tags": []
+}

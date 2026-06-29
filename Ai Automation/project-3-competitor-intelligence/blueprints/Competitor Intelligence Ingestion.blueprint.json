@@ -1,0 +1,670 @@
+{
+    "name": "Competitor Intelligence Ingestion",
+    "flow": [
+        {
+            "id": 2,
+            "module": "rss:TriggerNewArticle",
+            "version": 4,
+            "parameters": {
+                "url": "https://neilpatel.com/blog/feed/",
+                "gzip": true,
+                "include": [],
+                "password": "",
+                "username": "",
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": -363,
+                    "y": -1
+                },
+                "restore": {},
+                "parameters": [
+                    {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of returned items",
+                        "required": true
+                    },
+                    {
+                        "name": "username",
+                        "type": "text",
+                        "label": "User name"
+                    },
+                    {
+                        "name": "password",
+                        "type": "text",
+                        "label": "Password"
+                    },
+                    {
+                        "name": "include",
+                        "type": "select",
+                        "label": "Process RSS fields",
+                        "multiple": true,
+                        "validate": {
+                            "enum": [
+                                "google-merchant-center",
+                                "itunes"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "gzip",
+                        "type": "boolean",
+                        "label": "Request compressed content",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "title",
+                        "type": "text",
+                        "label": "Title"
+                    },
+                    {
+                        "name": "description",
+                        "type": "text",
+                        "label": "Description"
+                    },
+                    {
+                        "name": "summary",
+                        "type": "text",
+                        "label": "Summary"
+                    },
+                    {
+                        "name": "author",
+                        "type": "text",
+                        "label": "Author"
+                    },
+                    {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL"
+                    },
+                    {
+                        "name": "dateUpdated",
+                        "type": "date",
+                        "label": "Date updated"
+                    },
+                    {
+                        "name": "dateCreated",
+                        "type": "date",
+                        "label": "Date created"
+                    },
+                    {
+                        "name": "comments",
+                        "type": "url",
+                        "label": "Comments"
+                    },
+                    {
+                        "name": "image",
+                        "spec": [
+                            {
+                                "name": "title",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "url",
+                                "type": "url",
+                                "label": "URL"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Image"
+                    },
+                    {
+                        "name": "categories",
+                        "spec": {
+                            "type": "text"
+                        },
+                        "type": "array",
+                        "label": "Categories"
+                    },
+                    {
+                        "name": "source",
+                        "spec": [
+                            {
+                                "name": "title",
+                                "type": "text",
+                                "label": "Name"
+                            },
+                            {
+                                "name": "url",
+                                "type": "url",
+                                "label": "URL"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Source"
+                    },
+                    {
+                        "name": "enclosures",
+                        "spec": [
+                            {
+                                "name": "url",
+                                "type": "url",
+                                "label": "URL"
+                            },
+                            {
+                                "name": "type",
+                                "type": "text",
+                                "label": "Type"
+                            },
+                            {
+                                "name": "length",
+                                "type": "number",
+                                "label": "Length"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Enclosures"
+                    },
+                    {
+                        "help": "Other RSS fields. All values are in text format.",
+                        "name": "rssFields",
+                        "spec": [
+                            {
+                                "name": "title",
+                                "type": "text",
+                                "label": "title"
+                            },
+                            {
+                                "name": "link",
+                                "type": "text",
+                                "label": "link"
+                            },
+                            {
+                                "name": "comments",
+                                "type": "text",
+                                "label": "comments"
+                            },
+                            {
+                                "name": "pubdate",
+                                "type": "text",
+                                "label": "pubdate"
+                            },
+                            {
+                                "name": "category",
+                                "type": "text",
+                                "label": "category"
+                            },
+                            {
+                                "name": "guid",
+                                "type": "text",
+                                "label": "guid"
+                            },
+                            {
+                                "name": "description",
+                                "type": "text",
+                                "label": "description"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "RSS fields"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 7,
+            "module": "mistral-ai:createACompletion",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 8636051
+            },
+            "filter": null,
+            "mapper": {
+                "model": "mistral-medium-2505",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "You are an expert competitive intelligence agent. Your job is to extract actionable positioning signals from scraped text and return a raw, minified JSON object matching the requested schema. \r\n\r\nCRITICAL ENFORCED RULES:\r\n1. Do not use markdown blocks. Never wrap output in ```json or ``` tags.\r\n2. Start your response directly with the opening curly brace '{' and end it with the closing brace '}'.\r\n3. Do not include introductory text, conversational text, or concluding notes.\n\nYou are an elite competitive intelligence analyst and growth marketing consultant. Your purpose is to read unstructured text from competitor feature releases, blogs, or landing pages and translate them into actionable go-to-market data structures. You must return ONLY a raw JSON object matching the requested schema. No conversational prose.\n\nAnalyze this competitor update:\nTitle: {{2.title}}\nContent: {{2.description}}\r\n\r\nExtract and format the intelligence data into the following schema structure:\r\n{\r\n  \"core_positioning_shift\": \"A 1-sentence synthesis of how their market angle is changing.\",\r\n  \"target_demographic\": \"Identify the primary industry sector or buyer persona they are targeting with this update.\",\r\n  \"threat_severity\": \"Low\" | \"Medium\" | \"High\",\r\n  \"marketing_copy_draft\": \"Write a 3-sentence email newsletter blurb suitable for our subscribers explaining this industry trend and why our company approach remains superior.\",\r\n  \"required_creative_assets\": [\r\n    \"Asset idea 1 (e.g., Feature comparison chart infographic)\",\r\n    \"Asset idea 2 (e.g., Short-form video script mockups)\"\r\n  ]\r\n}"
+                    },
+                    {
+                        "role": "user",
+                        "content": "Scraped Competitor Payload:\r\n---\r\n\nTitle: {{2.title}}\nDescription: {{2.description}}\n\r\n---\r\n\r\nExtract the strategic indicators into this exact JSON structure:\r\n{\r\n  \"core_positioning_shift\": \"Synthesis of how their market positioning is shifting.\",\r\n  \"target_demographic\": \"The specific market vertical or customer persona targeted.\",\r\n  \"threat_severity\": \"Low\" | \"Medium\" | \"High\",\r\n  \"marketing_copy_draft\": \"A brief 3-sentence email newsletter section draft framing why our product remains superior.\"\r\n}"
+                    }
+                ],
+                "temperature": "0.7",
+                "top_p": "1",
+                "safe_prompt": false,
+                "response_format": {
+                    "type": "text"
+                }
+            },
+            "metadata": {
+                "designer": {
+                    "x": -24,
+                    "y": -10
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "My Mistral connection",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "mistral-ai"
+                            }
+                        }
+                    },
+                    "expect": {
+                        "model": {
+                            "mode": "chose",
+                            "label": "mistral-medium-2505"
+                        },
+                        "messages": {
+                            "mode": "chose",
+                            "items": [
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "System"
+                                    }
+                                },
+                                {
+                                    "role": {
+                                        "mode": "chose",
+                                        "label": "User"
+                                    }
+                                }
+                            ]
+                        },
+                        "safe_prompt": {
+                            "mode": "chose"
+                        },
+                        "response_format": {
+                            "nested": {
+                                "type": {
+                                    "mode": "chose",
+                                    "label": "Text"
+                                }
+                            }
+                        },
+                        "tool_choice": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:mistral-ai",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    },
+                    {
+                        "name": "messages",
+                        "type": "array",
+                        "label": "Messages",
+                        "required": true,
+                        "spec": {
+                            "spec": [
+                                {
+                                    "name": "role",
+                                    "type": "select",
+                                    "label": "Role",
+                                    "options": [
+                                        {
+                                            "label": "User",
+                                            "value": "user"
+                                        },
+                                        {
+                                            "label": "System",
+                                            "value": "system"
+                                        },
+                                        {
+                                            "label": "Assistant",
+                                            "value": "assistant"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "content",
+                                    "type": "text",
+                                    "label": "Content"
+                                }
+                            ],
+                            "type": "collection",
+                            "name": "value"
+                        }
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature"
+                    },
+                    {
+                        "name": "top_p",
+                        "type": "number",
+                        "label": "Top P"
+                    },
+                    {
+                        "name": "max_tokens",
+                        "type": "integer",
+                        "label": "Max Tokens",
+                        "validate": {
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "safe_prompt",
+                        "type": "boolean",
+                        "label": "Safe Mode"
+                    },
+                    {
+                        "name": "random_seed",
+                        "type": "integer",
+                        "label": "Random Seed"
+                    },
+                    {
+                        "name": "stop",
+                        "type": "text",
+                        "label": "Stop"
+                    },
+                    {
+                        "name": "response_format",
+                        "type": "collection",
+                        "label": "Response Format",
+                        "spec": [
+                            {
+                                "name": "type",
+                                "type": "select",
+                                "label": "Type",
+                                "validate": {
+                                    "enum": [
+                                        "text",
+                                        "json_object"
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "tools",
+                        "type": "any",
+                        "label": "Tools"
+                    },
+                    {
+                        "name": "tool_choice",
+                        "type": "select",
+                        "label": "Tool Choice",
+                        "validate": {
+                            "enum": [
+                                "auto",
+                                "none",
+                                "any"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "json:ParseJSON",
+            "version": 1,
+            "parameters": {},
+            "mapper": {
+                "json": "{{7.choices[].message.content}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 298,
+                    "y": -16
+                },
+                "restore": {},
+                "parameters": [
+                    {
+                        "name": "type",
+                        "type": "udt",
+                        "label": "Data structure"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "json",
+                        "type": "text",
+                        "label": "JSON string",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 6,
+            "module": "airtable:ActionCreateRecord",
+            "version": 3,
+            "parameters": {
+                "__IMTCONN__": 8602844
+            },
+            "mapper": {
+                "base": "app0vjuBIkBUVqnjA",
+                "typecast": false,
+                "useColumnId": false,
+                "table": "tbln4ZzPlhblLFjlI",
+                "record": {
+                    "fldlZMSYUt7BY7nZC": "{{2.title}}",
+                    "fldzuapkikA9NlM3o": "{{2.url}}",
+                    "fld9VvFggg4q8e86W": "{{5.core_positioning_shift}}",
+                    "fldc28CIoqowQ0wHs": "{{5.threat_severity}}",
+                    "fldvPiswuLVVGzoyn": "{{5.marketing_copy_draft}}"
+                }
+            },
+            "metadata": {
+                "designer": {
+                    "x": 639,
+                    "y": -7
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "My Airtable OAuth connection (User ID: usrv1BRaI6uYjuDbI)",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "airtable3"
+                            }
+                        }
+                    },
+                    "expect": {
+                        "base": {
+                            "label": "Ops Marketing Engine"
+                        },
+                        "typecast": {
+                            "mode": "chose"
+                        },
+                        "useColumnId": {
+                            "mode": "chose"
+                        },
+                        "table": {
+                            "nested": [
+                                {
+                                    "name": "record",
+                                    "spec": [
+                                        {
+                                            "name": "fldlZMSYUt7BY7nZC",
+                                            "type": "text",
+                                            "label": "Article Title"
+                                        },
+                                        {
+                                            "name": "fldzuapkikA9NlM3o",
+                                            "type": "text",
+                                            "label": "Captured URL"
+                                        },
+                                        {
+                                            "name": "fld9VvFggg4q8e86W",
+                                            "type": "text",
+                                            "label": "Core Position Shift",
+                                            "multiline": true
+                                        },
+                                        {
+                                            "name": "fldc28CIoqowQ0wHs",
+                                            "type": "text",
+                                            "label": "Threat Level",
+                                            "multiline": true
+                                        },
+                                        {
+                                            "name": "fldvPiswuLVVGzoyn",
+                                            "type": "text",
+                                            "label": "Newsletter Draft Copy",
+                                            "multiline": true
+                                        },
+                                        {
+                                            "mode": "edit",
+                                            "name": "fldcptm7aD2VPddvL",
+                                            "type": "select",
+                                            "label": "Generate Newsletter Feature",
+                                            "dynamic": true,
+                                            "options": [
+                                                {
+                                                    "label": "False",
+                                                    "value": "False"
+                                                },
+                                                {
+                                                    "label": "True",
+                                                    "value": "True"
+                                                }
+                                            ],
+                                            "validate": false
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Record"
+                                }
+                            ],
+                            "label": "Research"
+                        },
+                        "record": {
+                            "nested": {
+                                "fldcptm7aD2VPddvL": {
+                                    "mode": "edit"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:airtable3,airtable2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "base",
+                        "type": "select",
+                        "label": "Base",
+                        "required": true
+                    },
+                    {
+                        "name": "typecast",
+                        "type": "boolean",
+                        "label": "Smart links",
+                        "required": true
+                    },
+                    {
+                        "name": "useColumnId",
+                        "type": "boolean",
+                        "label": "Use Column ID",
+                        "required": true
+                    },
+                    {
+                        "name": "table",
+                        "type": "select",
+                        "label": "Table",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                    },
+                    {
+                        "name": "createdTime",
+                        "type": "date",
+                        "label": "Created Time"
+                    },
+                    {
+                        "name": "Article Title",
+                        "label": "Article Title",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Captured URL",
+                        "label": "Captured URL",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Core Position Shift",
+                        "label": "Core Position Shift",
+                        "type": "text",
+                        "multiline": true
+                    },
+                    {
+                        "name": "Threat Level",
+                        "label": "Threat Level",
+                        "type": "text",
+                        "multiline": true
+                    },
+                    {
+                        "name": "Newsletter Draft Copy",
+                        "label": "Newsletter Draft Copy",
+                        "type": "text",
+                        "multiline": true
+                    },
+                    {
+                        "name": "Generate Newsletter Feature",
+                        "label": "Generate Newsletter Feature",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Last Modified",
+                        "label": "Last Modified",
+                        "type": "date"
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com",
+        "notes": []
+    }
+}

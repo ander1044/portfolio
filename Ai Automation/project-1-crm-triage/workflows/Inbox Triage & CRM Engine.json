@@ -1,0 +1,502 @@
+{
+  "name": "Inbox Triage & CRM Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Poll Email Inbox').item.json.id }}",
+        "labelIds": [
+          "SPAM"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        64
+      ],
+      "id": "adf49b79-f1b2-4406-9124-93674a717cb1",
+      "name": "Add to SPAM",
+      "webhookId": "d44829f5-ddf4-41b9-b437-093e1c15c2e9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "EmqpuKAV91yKDI0k",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#urgent",
+          "mode": "name"
+        },
+        "text": "=URGENT:\n{{ $('Clean JSON Data').item.json.category }}\n\nSummary:\n{{ $('Clean JSON Data').item.json.first_n$('Clean JSON Data').item.json.company_nameame }} {{ $('Clean JSON Data').item.json.last_name }}\n{{ $('Clean JSON Data').item.json.email_address }}\n{{ $('Clean JSON Data').item.json.justification }}\n",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        480,
+        -128
+      ],
+      "id": "aa14ea2e-3875-4662-9262-d4a38203d681",
+      "name": "Urgent requests",
+      "webhookId": "866e642f-a740-4ec4-846e-ba69c85b47b9",
+      "credentials": {
+        "slackApi": {
+          "id": "clO3va8WsbIKXKh4",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#partners",
+          "mode": "name"
+        },
+        "text": "=INCOMING PARTNERSHIP:\n{{ $('Clean JSON Data').item.json.category }}\n\nSummary:\n{{ $('Clean JSON Data').item.json.first_n$('Clean JSON Data').item.json.company_nameame }} {{ $('Clean JSON Data').item.json.last_name }}\n{{ $('Clean JSON Data').item.json.email_address }}\n{{ $('Clean JSON Data').item.json.justification }}\n",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        480,
+        256
+      ],
+      "id": "7f5a2135-ad36-4a82-b9d3-7ff5583817b4",
+      "name": "Partnership Proposal",
+      "webhookId": "fdfe1c86-85ed-4f57-92a1-9aaee34cc0aa",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "QKFlNsYPW70RObtl",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "New Lead",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "89476143-aafd-47e3-a4ce-bb90f392f879"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "3dd7fe65-a432-4ef4-8b8b-5fb54a500d2c",
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "Current Client Urgent",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0b320893-8dae-49ca-bb11-4a8065ea0fe9",
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "Spam",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "1a3999e9-7b0f-462e-a1f0-fe5256e1dad7",
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "Partnership",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        256,
+        -64
+      ],
+      "id": "80d0646c-43fb-4b6c-911f-4590eb77be59",
+      "name": "Category Router"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "=\n{{ $json.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        -32
+      ],
+      "id": "c5a5b126-a3e9-4a45-b1ae-7fe4f7a0ebda",
+      "name": "Clean JSON Data"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "sendAndWait",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#leads",
+          "mode": "name"
+        },
+        "message": "={{ $('Poll Email Inbox').item.json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        928,
+        -320
+      ],
+      "id": "d7d3c421-3949-4587-8680-cff74e1f367c",
+      "name": "Send Approval Request",
+      "webhookId": "49b26ff7-7dbe-4d39-8043-eb83361ec47d",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "QKFlNsYPW70RObtl",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Poll Email Inbox').item.json.from.value[0].address }}",
+        "subject": "=Next steps with i0nai",
+        "message": "=Hi {{ $('Clean JSON Data').item.json.first_name }},\n\nThank you for reaching out and sharing the details about your operational goals at {{ $('Clean JSON Data').item.json.company_name }}. We'd love to help you streamline your sales pipeline and automate your workflows with n8n.\n\nTo find a time that works best for a brief discovery call, please select a slot that fits your schedule here: https://calendar.app.google/YTByWK5UdWWdLHpu9\n\n\nLooking forward to connecting with you soon.\n\nBest regards,\n\nAnda",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1152,
+        -320
+      ],
+      "id": "569e4862-3689-4d6a-8e5b-d3cff409b16a",
+      "name": "Send Approval Email",
+      "webhookId": "c91f160e-35f0-4c79-b583-50c49169b01b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "EmqpuKAV91yKDI0k",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "Label_620844268041475775"
+          ],
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -544,
+        -32
+      ],
+      "id": "08c4d5d9-047f-4be4-97cc-412e3fa23224",
+      "name": "Poll Email Inbox",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "EmqpuKAV91yKDI0k",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "llama3.1:8b",
+          "mode": "list",
+          "cachedResultName": "llama3.1:8b"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an enterprise email triage routing layer. Your sole job is to categorize inbound emails into exactly one of four categories. You must output a raw, clean JSON object. Do not include markdown wraps (like ```json), and do not include conversational commentary.\n\nAnalyze the following inbound email payload:\n\nSubject: {{ $json.subject }}\nFrom: {{ $json.from.value[0].address }}\nBody: {{ $json.text }}\n\nClassify this email into exactly one of these categories:\n- \"New Lead\": Inquiries from prospective clients requesting services, pricing, quotes, or introduction meetings.\n- \"Current Client Urgent\": Communication from established partners/clients reporting system breakdowns, contract escalations, or production blockers.\n- \"Spam\": Cold marketing outreach, automated newsletters, recruitment solicitations, or irrelevant notifications.\n- \"Partnership\": Requests for collaboration, networking, joint ventures, or vendor relationships.\n\nExtract the data into this exact JSON structure:\n{\n  \"first_name\": \"Extract the person's first name\",\n  \"last_name\": \"Extract the person's last name,\"\n  \"company_name\": \"Extract the organization or company name if apparent. Ignore Hubspot as a company; else use null\",\n  \"email_address\": \"Extract the direct sender email address\",\n  \"phone_number\": \"Extract any phone numbers found in the body or email signature\",\n  \"project_name\": \"Extract what the project or task is about to create a task name\"\n  \"estimated_budget\": \"Extract any financial numbers related to budget or project scope, number only, else null\",\n\"category\": \"INSERT_CATEGORY_HERE\",\n\"confidence_score\": 0.00,\n\"justification\": \"One brief sentence explaining the choice.\"\n\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -32
+      ],
+      "id": "8e5455ac-1778-46af-ac7d-be8ab83ad968",
+      "name": "Enterprise Email Triage Routing LLM",
+      "credentials": {
+        "ollamaApi": {
+          "id": "r1K2goGITUG1gLYK",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "appToken",
+        "email": "={{ $json.email_address }}",
+        "additionalFields": {
+          "companyName": "={{ $json.company_name }}",
+          "firstName": "={{ $json.first_name }}",
+          "lastName": "={{ $json.last_name }}",
+          "phoneNumber": "={{ $json.phone_number }}",
+          "workEmail": "={{ $json.email_address }}"
+        },
+        "options": {
+          "resolveData": false
+        }
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        -320
+      ],
+      "id": "721adcb6-19c6-4c99-9f58-cb2e3feb3f66",
+      "name": "Create Or Update HubSpot Contact",
+      "credentials": {
+        "hubspotAppToken": {
+          "id": "GCC2imFClC0598H8",
+          "name": "HubSpot account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "appToken",
+        "resource": "deal",
+        "stage": "qualifiedtobuy",
+        "additionalFields": {
+          "amount": "={{ $('Category Router').item.json.estimated_budget }}",
+          "associatedCompany": "={{ $json.properties.associatedcompanyid.value }}",
+          "description": "={{ $('Poll Email Inbox').item.json.text }}",
+          "dealName": "={{ $('Category Router').item.json.project_name }}",
+          "dealOwner": {
+            "__rl": true,
+            "value": 94570265,
+            "mode": "list",
+            "cachedResultName": "mristo1044@gmail.com"
+          }
+        }
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        -320
+      ],
+      "id": "441384ac-f6a9-4c26-80e4-b3bb5a9780d9",
+      "name": "Create A HubSpot Deal",
+      "credentials": {
+        "hubspotAppToken": {
+          "id": "GCC2imFClC0598H8",
+          "name": "HubSpot account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Category Router": {
+      "main": [
+        [
+          {
+            "node": "Create Or Update HubSpot Contact",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Urgent requests",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add to SPAM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Partnership Proposal",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Clean JSON Data": {
+      "main": [
+        [
+          {
+            "node": "Category Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Approval Request": {
+      "main": [
+        [
+          {
+            "node": "Send Approval Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Poll Email Inbox": {
+      "main": [
+        [
+          {
+            "node": "Enterprise Email Triage Routing LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enterprise Email Triage Routing LLM": {
+      "main": [
+        [
+          {
+            "node": "Clean JSON Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Or Update HubSpot Contact": {
+      "main": [
+        [
+          {
+            "node": "Create A HubSpot Deal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create A HubSpot Deal": {
+      "main": [
+        [
+          {
+            "node": "Send Approval Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "563555db-5610-48ea-beb4-200684405cab",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6014915b5bd8b18b51541dd7848851e360f2d52ea1434e7606ee54d296c878f1"
+  },
+  "id": "WmQnRVN2oGGw2NGAeRVOv",
+  "tags": []
+}

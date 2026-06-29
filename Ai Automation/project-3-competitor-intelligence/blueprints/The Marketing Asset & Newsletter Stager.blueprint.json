@@ -1,8 +1,8 @@
 {
-    "name": "Integration Airtable",
+    "name": "The Marketing Asset & Newsletter Stager",
     "flow": [
         {
-            "id": 2,
+            "id": 11,
             "module": "airtable:TriggerWatchRecords",
             "version": 3,
             "parameters": {
@@ -11,12 +11,11 @@
                 "useColumnId": false,
                 "table": "tbln4ZzPlhblLFjlI",
                 "config": {
-                    "triggerField": " Last Modified Time",
-                    "labelField": "Status"
+                    "triggerField": "Last Modified",
+                    "labelField": "Article Title"
                 },
                 "maxRecords": 10,
-                "view": "viw5vslOfAW7t6d7X",
-                "formula": ""
+                "formula": "{Generate Newsletter Feature} = 1"
             },
             "mapper": {},
             "metadata": {
@@ -37,20 +36,17 @@
                             "label": "Ops Marketing Engine"
                         },
                         "table": {
-                            "label": "Research Table"
+                            "label": "Research"
                         },
                         "config": {
                             "nested": {
                                 "triggerField": {
-                                    "label": " Last Modified Time"
+                                    "label": "Last Modified"
                                 },
                                 "labelField": {
-                                    "label": "Status"
+                                    "label": "Article Title"
                                 }
                             }
-                        },
-                        "view": {
-                            "label": "Grid view"
                         }
                     }
                 },
@@ -131,8 +127,8 @@
                         "label": "Created Time"
                     },
                     {
-                        "name": "Source Name",
-                        "label": "Source Name",
+                        "name": "Article Title",
+                        "label": "Article Title",
                         "type": "text"
                     },
                     {
@@ -141,132 +137,60 @@
                         "type": "text"
                     },
                     {
-                        "name": "Raw Content Dump",
-                        "label": "Raw Content Dump",
+                        "name": "Core Position Shift",
+                        "label": "Core Position Shift",
                         "type": "text",
                         "multiline": true
                     },
                     {
-                        "name": "AI Trend Analysis",
-                        "label": "AI Trend Analysis",
+                        "name": "Threat Level",
+                        "label": "Threat Level",
                         "type": "text",
                         "multiline": true
                     },
                     {
-                        "name": "Status",
-                        "label": "Status",
+                        "name": "Newsletter Draft Copy",
+                        "label": "Newsletter Draft Copy",
+                        "type": "text",
+                        "multiline": true
+                    },
+                    {
+                        "name": "Generate Newsletter Feature",
+                        "label": "Generate Newsletter Feature",
                         "type": "text"
                     },
                     {
-                        "name": "Campaign Dispatches",
-                        "label": "Campaign Dispatches",
-                        "type": "array",
-                        "spec": {
-                            "label": "Record ID"
-                        }
-                    },
-                    {
-                        "name": " Created Time",
-                        "label": " Created Time",
-                        "type": "date"
-                    },
-                    {
-                        "name": " Last Modified Time",
-                        "label": " Last Modified Time",
+                        "name": "Last Modified",
+                        "label": "Last Modified",
                         "type": "date"
                     }
                 ]
             }
         },
         {
-            "id": 6,
-            "module": "ai-tools:Ask",
-            "version": 2,
-            "parameters": {
-                "makeConnectionId": 8601081,
-                "model": "small"
-            },
-            "filter": {
-                "name": "",
-                "conditions": [
-                    [
-                        {
-                            "a": "{{2.Status}}",
-                            "o": "text:equal",
-                            "b": "Approved for Newsletter"
-                        }
-                    ]
-                ]
-            },
-            "mapper": {
-                "input": "generate an engaging, conversion-optimized marketing"
-            },
-            "metadata": {
-                "designer": {
-                    "x": 169,
-                    "y": 2
-                },
-                "restore": {
-                    "parameters": {
-                        "makeConnectionId": {
-                            "label": "Make's AI Provider (default)",
-                            "data": {
-                                "scoped": "true",
-                                "connection": "ai-provider"
-                            }
-                        },
-                        "model": {
-                            "mode": "chose",
-                            "nested": [],
-                            "label": "SmallModel: gpt-5-nano. Reasoning: minimal. Efficiently handles long conversations and reasoning, delivering smart conclusions quickly"
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "makeConnectionId",
-                        "type": "account:ai-provider,openai-gpt-3,anthropic-claude,gemini-ai-q9zyjp,ai-agent-foundry-openai,ai-agent-foundry-non-openai,mistral-ai,cohere,groq,ai-agent-xai,amazon-bedrock,ai-agent-openai-compatible",
-                        "label": "Connection",
-                        "required": true
-                    },
-                    {
-                        "name": "model",
-                        "type": "select",
-                        "label": "Model",
-                        "required": true
-                    }
-                ],
-                "expect": [
-                    {
-                        "name": "input",
-                        "type": "text",
-                        "label": "Text",
-                        "required": true
-                    }
-                ]
-            }
-        },
-        {
-            "id": 3,
+            "id": 12,
             "module": "mailchimp:createACampaign",
             "version": 2,
             "parameters": {
                 "__IMTCONN__": 8603863
             },
             "mapper": {
-                "title": "News campaign",
+                "title": "Newsletter",
                 "list": "64ba2ea867",
-                "subject_line": "Security news",
-                "from_name": "i0nai Marketing",
+                "subject_line": "Industry Intel: Reacting to Market Shifts",
+                "preview_text": "Here is what our strategy team is tracking this week...",
+                "from_name": "i0nai",
                 "reply_to": "mristo1044@gmail.com",
+                "to_name": "Newsletter Subscriber",
                 "use_conversation": false,
                 "select": "html",
-                "segment_text": "{{6.answer}}"
+                "segment": 10411992,
+                "segment_text": "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>Competitive Intelligence Briefing</title>\r\n</head>\r\n<body style=\"margin: 0; padding: 0; background-color: #f4f6f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;\">\r\n    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"table-layout: fixed; background-color: #f4f6f8; padding: 40px 20px;\">\r\n        <tr>\r\n            <td align=\"center\">\r\n                <!-- Main Email Container -->\r\n                <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);\">\r\n                    \r\n                    <!-- Header Banner -->\r\n                    <tr>\r\n                        <td style=\"background-color: #1a1f2c; padding: 32px 40px; text-align: left;\">\r\n                            <span style=\"color: #58a6ff; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-bottom: 8px;\">Market Intelligence Update</span>\r\n                            <h1 style=\"color: #ffffff; font-size: 24px; font-weight: 700; margin: 0; line-height: 1.3;\">Weekly Strategic Insights Briefing</h1>\r\n                        </td>\r\n                    </tr>\r\n\r\n                    <!-- Body Content Area -->\r\n                    <tr>\r\n                        <td style=\"padding: 40px;\">\r\n                            <p style=\"color: #334155; font-size: 16px; line-height: 1.6; margin-top: 0; margin-bottom: 24px;\">\r\n                                Hello Team,\r\n                            </p>\r\n                            <p style=\"color: #334155; font-size: 16px; line-height: 1.6; margin-bottom: 32px;\">\r\n                                Our automated tracking systems just flagged a significant shift in our competitive landscape. Here is the breakdown analyzed by our strategy engine along with our immediate counter-positioning directive:\r\n                            </p>\r\n\r\n                            <!-- AI Generated Content Card Section -->\r\n                            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"background-color: #f8fafc; border-left: 4px solid #1a1f2c; border-radius: 4px; margin-bottom: 32px;\">\r\n                                <tr>\r\n                                    <td style=\"padding: 24px; color: #1e293b; font-size: 15px; line-height: 1.6; font-style: italic;\">\r\n                                        <p>{{11.`Newsletter Draft Copy`}}</p>\r\n                                    </td>\r\n                                </tr>\r\n                            </table>\r\n\r\n                            <p style=\"color: #334155; font-size: 16px; line-height: 1.6; margin-bottom: 32px;\">\r\n                                All sales, marketing, and product development assets are being staged in the corresponding directories to ensure alignment on this messaging adjustment.\r\n                            </p>\r\n\r\n                            <!-- Call To Action Button (Optional / Calendly Intersect) -->\r\n                            <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\r\n                                <tr>\r\n                                    <td align=\"center\" style=\"padding-bottom: 16px;\">\r\n                                        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: separate;\">\r\n                                            <tr>\r\n                                                <td align=\"center\" valign=\"middle\" style=\"background-color: #1a1f2c; border-radius: 6px;\">\r\n                                                    <a href=\"https://calendly.com\" target=\"_blank\" style=\"display: inline-block; color: #ffffff; font-size: 15px; font-weight: 600; padding: 14px 32px; text-decoration: none; letter-spacing: 0.5px;\">Review Strategic Assets</a>\r\n                                                </td>\r\n                                            </tr>\r\n                                        </table>\r\n                                    </td>\r\n                                </tr>\r\n                            </table>\r\n                        </td>\r\n                    </tr>\r\n\r\n                    <!-- Footer Section -->\r\n                    <tr>\r\n                        <td style=\"background-color: #f8fafc; padding: 24px 40px; text-align: center; border-top: 1px solid #e2e8f0;\">\r\n                            <p style=\"color: #94a3b8; font-size: 12px; line-height: 1.5; margin: 0;\">\r\n                                This is an automated operations dispatch generated by your Competitive Intelligence Pipeline.<br>\r\n                                © 2026 Operations Automation Suite. All rights reserved.\r\n                            </p>\r\n                        </td>\r\n                    </tr>\r\n\r\n                </table>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n</body>\r\n</html>"
             },
             "metadata": {
                 "designer": {
-                    "x": 583,
-                    "y": -2
+                    "x": 100,
+                    "y": 9
                 },
                 "restore": {
                     "parameters": {
@@ -293,7 +217,8 @@
                             "label": "By HTML Format Text"
                         },
                         "segment": {
-                            "mode": "chose"
+                            "mode": "chose",
+                            "label": "Customer"
                         }
                     }
                 },
@@ -391,14 +316,14 @@
             },
             "mapper": {
                 "destination": "drive",
-                "folderId": "/1FqxNjLxTruU6SDM3iRDCl20-ovHoh2ot/1cdrkpZLHJOdZvMw6RLzFVXe-G25WRjTc",
-                "name": "{{3.id}}_{{3.create_time}}",
+                "folderId": "/1Pl5mtTQQt0DCZdzzTczBFEgj4LJJTy3b/1jyJiGrfZ53C7bYcvcDmj7s11Fyzqg0C-/19A7h-w-8yzuSbGlOsvelpXjZDw35Rkuv",
+                "name": "Asset Requests-{{11.`Article Title`}}-[Pending Assets]",
                 "shared": false
             },
             "metadata": {
                 "designer": {
-                    "x": 883,
-                    "y": -2
+                    "x": 430,
+                    "y": 9
                 },
                 "restore": {
                     "parameters": {
@@ -417,8 +342,9 @@
                         "folderId": {
                             "mode": "chose",
                             "path": [
-                                "Marketing",
-                                "Dispatches"
+                                "Marketing Assets",
+                                "2026",
+                                "Campaigns"
                             ]
                         }
                     }
